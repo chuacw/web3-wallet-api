@@ -8,4 +8,6 @@ npm install web3-wallet-api
 
 ## Usage
 
-See [examples](./examples/findChain.ts).
+See 
+* [findChain](./examples/findChain.ts)
+* [listWallets](./examples/listWallets.ts)

@@ -1,4 +1,4 @@
-import { lookupByChainId } from "../src/chainId-utils";
+import { lookupByChainId } from "../dist/chainId-utils";
 
 let chainName = lookupByChainId(2716446429837000);
 console.log(chainName);

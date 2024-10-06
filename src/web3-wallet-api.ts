@@ -1,4 +1,5 @@
 import { hasMessageField } from 'delphirtl/sysutils';
+import { EIP6963AnnounceProviderEvent, EIP6963ProviderDetail } from './EIP6963Types';
 
 interface UnlockedAPI {
   /**
@@ -113,6 +114,15 @@ interface MetamaskAPI extends RequestAPI {
   _metamask: UnlockedAPI;
 }
 
+const eip6063AnnounceProvider = "eip6963:announceProvider";
+const eip6963RequestProvider = "eip6963:requestProvider";
+
+declare global {
+  interface WindowEventMap {
+    eip6063announcePrivider: CustomEvent<EIP6963AnnounceProviderEvent>;
+  }
+}
+
 export type {
   ConnectInfo,
   MetamaskAPI,
@@ -122,7 +132,39 @@ export type {
   UnlockedAPI,
   WalletAPI,
 };
+
+/**
+ * 
+ * @returns Array of EIP-6963 compatible wallet providers
+ */
+function getWallets(): EIP6963ProviderDetail[] {
+  
+  let providers: EIP6963ProviderDetail[] = [];
+
+  /**
+   * 
+   * @param event A provider that supports EIP-6963
+   * @returns 
+   */
+  function onAnnouncement(event: EIP6963AnnounceProviderEvent) {
+    // Prevent adding a provider if it already exists in the list based on its uuid.
+    if (providers.some(p => p.info.uuid === event.detail.info.uuid)) return;
+
+    // Add the new provider to the list and call the provided callback function.
+    providers = [...providers, event.detail];
+  }
+
+  // Attaches the event listener, dispatches the EIP-6963 event, then removes the event listener
+  // and returns the providers
+  window.addEventListener(eip6063AnnounceProvider, onAnnouncement as EventListener);
+  window.dispatchEvent(new Event(eip6963RequestProvider));
+  window.removeEventListener(eip6063AnnounceProvider, onAnnouncement as EventListener);
+
+  return providers;
+}
+
 export {
   getEthereumChainId,
   switchEthereumChain,
+  getWallets
 };
