@@ -4,6 +4,11 @@ import { sortedChainData } from "./chainId-const";
 
 const map = new Map(sortedChainData.map((obj) => [obj.chainId, obj.name]));
 
+/**
+ * 
+ * @param chainId The number to look up
+ * @returns The chain name of the given chainId
+ */
 function lookupByChainId(chainId: number): string | null {
   const result = map.get(chainId);
   return result ? result : null;

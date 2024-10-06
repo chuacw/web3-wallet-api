@@ -133,9 +133,14 @@ export type {
   WalletAPI,
 };
 
+export {
+  eip6063AnnounceProvider,
+  eip6963RequestProvider
+}
+
 /**
  * 
- * @returns Array of EIP-6963 compatible wallet providers
+ * @returns An array of EIP-6963 compatible wallet providers installed in the current browser.
  */
 function getWallets(): EIP6963ProviderDetail[] {
   

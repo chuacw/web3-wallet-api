@@ -98,5 +98,6 @@ export {
   type EIP6963ProviderInfo,
   type EIP1193Provider,
   type EIP6963ProviderDetail,
-  type EIP6963AnnounceProviderEvent
+  type EIP6963AnnounceProviderEvent,
+  type EIP1193Provider as Eip1193Provider,
 }

@@ -2,13 +2,21 @@
   "name": "web3-wallet-api",
   "version": "0.0.26",
   "dependencies": {
-    "delphirtl": "^1.1.11",
+    "delphirtl": "^1.1.15",
     "eth-rpc-errors": "^4.0.3"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.13",
     "@types/node": "^22.7.4",
+    "@types/uuid": "^10.0.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "npx": "^10.2.2",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "uuid": "^10.0.0"
   },
   "description": "Web3 Browser EIP-6963 Wallet API",
   "main": "./dist/index.js",
@@ -24,8 +32,9 @@
     "examples"
   ],
   "scripts": {
-    "prepublishOnly": "tsc -b",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublishOnly": "npm run test && tsc -b",
+    "build": "npm run test && tsc -b",
+    "test": "jest"
   },
   "keywords": [
     "Web3",

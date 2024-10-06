@@ -108,5 +108,9 @@
   "exclude": [
     "examples",
     "dist"
+  ],
+  "include": [
+    "global.d.ts",
+    "tests"
   ]
 }
