@@ -19,11 +19,15 @@ function clone<T>(obj: T): T {
 
 describe('getWallets', () => {
     //#region beforeAll afterEach
-    beforeAll(() => {
+    beforeEach(() => {
         // Mocking the window object methods
         global.window.addEventListener = jest.fn();
         global.window.dispatchEvent = jest.fn();
         global.window.removeEventListener = jest.fn();
+
+        evMap = new Map<CustomEvent, List<EventListener>>();
+        eventDetailProviders = [];
+    
     });
 
     afterEach(() => {
@@ -35,7 +39,7 @@ describe('getWallets', () => {
     function getProvider(name: string): EIP6963AnnounceProviderEvent {
         let provider: EIP6963AnnounceProviderEvent = {
             detail: {
-                info: { uuid: uuidv4(), icon: '', name: name, walletId: name },
+                info: { uuid: '', icon: '', name: name, walletId: name },
                 provider: {
                     request: jest.fn(),
                     host: '',
@@ -86,8 +90,8 @@ describe('getWallets', () => {
     }
 
     function getMetamaskProvider(): EIP6963AnnounceProviderEvent {
-        let provider = getProvider('Metamask');
-      return provider;
+        const provider = getProvider('Metamask');
+        return provider;
     }
 
     function getTrustProvider(): EIP6963AnnounceProviderEvent {
@@ -102,9 +106,9 @@ describe('getWallets', () => {
     //#endregion
 
     //#region mock functions
-    const evMap = new Map<CustomEvent, List<EventListener>>();
+    let evMap: Map<CustomEvent, List<EventListener>>;
     let eventDetailProviders: EIP6963AnnounceProviderEvent[];
-    
+
     /**
      * Create 2 wallets
      */
@@ -166,15 +170,14 @@ describe('getWallets', () => {
     }
     //#endregion
 
-    it('should add provider(s) on announcement', () => {
+    it('should return 2 wallets', () => {
         create2Wallets();
         // Call / Test the function
         const providers = getWallets();
 
         // Check that the providers were added
-        expect(providers).toHaveLength(eventDetailProviders.length);
         expect(providers.length).toBe(2);
-        for(let i = 0; i < eventDetailProviders.length; i++) {
+        for (let i = 0; i < eventDetailProviders.length; i++) {
             expect(providers[i].info.uuid).toBe(eventDetailProviders[i].detail.info.uuid);
             expect(providers[i].info.name).toBe(eventDetailProviders[i].detail.info.name);
         }
@@ -183,16 +186,25 @@ describe('getWallets', () => {
         expect(global.window.addEventListener).toHaveBeenCalledWith(eip6063AnnounceProvider, expect.any(Function));
         expect(global.window.dispatchEvent).toHaveBeenCalledWith(new Event(eip6963RequestProvider));
         expect(global.window.removeEventListener).toHaveBeenCalledWith(eip6063AnnounceProvider, expect.any(Function));
+    });
 
+    it('should return 3 wallets', () => {
         create3Wallets();
-        const providers2 = getWallets();
-        expect(providers2).toHaveLength(eventDetailProviders.length);
-        expect(providers2.length).toBe(3);
-        for(let i = 0; i < eventDetailProviders.length; i++) {
-            expect(providers2[i].info.uuid).toBe(eventDetailProviders[i].detail.info.uuid);
-            expect(providers2[i].info.name).toBe(eventDetailProviders[i].detail.info.name);
+        // Call / Test the function
+        const providers = getWallets();
+
+        // Check that the providers were added
+        expect(providers.length).toBe(3);
+        for (let i = 0; i < eventDetailProviders.length; i++) {
+            expect(providers[i].info.uuid).toBe(eventDetailProviders[i].detail.info.uuid);
+            expect(providers[i].info.name).toBe(eventDetailProviders[i].detail.info.name);
         }
 
+        // Ensure that the event listeners were called correctly
+        expect(global.window.addEventListener).toHaveBeenCalledWith(eip6063AnnounceProvider, expect.any(Function));
+        expect(global.window.dispatchEvent).toHaveBeenCalledWith(new Event(eip6963RequestProvider));
+        expect(global.window.removeEventListener).toHaveBeenCalledWith(eip6063AnnounceProvider, expect.any(Function));
     });
+
 
 });
